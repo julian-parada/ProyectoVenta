@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PagoFactory extends Factory
 {
+    // database/factories/PagoFactory.php
     public function definition(): array
     {
         return [
-            'metodopago_id' => MetodoPago::factory(),
-            'monto'         => fake()->randomFloat(2, 50, 1000),
-            'fecha_pago'    => fake()->dateTimeBetween('-3 months', 'now')->format('Y-m-d'),
+            'factura_id' => \App\Models\Factura::inRandomOrder()->first()?->id
+                ?? \App\Models\Factura::factory()->create()->id,
+            'metodopago_id' => \App\Models\MetodoPago::inRandomOrder()->first()?->id,
+            'monto' => fake()->randomFloat(2, 10, 2000),
+            'fecha_pago' => fake()->date(),
         ];
     }
 }
