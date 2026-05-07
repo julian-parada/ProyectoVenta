@@ -14,11 +14,16 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Crear datos base
+        // 1. Datos base
         $metodos   = MetodoPago::factory()->count(3)->create();
-        $productos = Producto::factory()->count(20)->create();
         $empleados = Empleado::factory()->count(5)->create();
-        $clientes  = Cliente::factory()->count(10)->create();
+
+        // ✅ Productos y clientes con estado, FUERA del loop
+        $productos = Producto::factory(15)->active()->create()
+            ->merge(Producto::factory(5)->inactive()->create());
+
+        $clientes = Cliente::factory(15)->active()->create()
+            ->merge(Cliente::factory(5)->inactive()->create());
 
         // 2. Por cada cliente, crear facturas con detalles y pagos
         $clientes->each(function ($cliente) use ($productos, $empleados, $metodos) {
@@ -28,7 +33,7 @@ class DatabaseSeeder extends Seeder
                 'empleado_id' => $empleados->random()->id,
             ])->each(function ($factura) use ($productos, $metodos) {
 
-                // Agregar entre 1 y 4 productos al detalle
+                // Detalles
                 $total = 0;
                 for ($i = 0; $i < rand(1, 4); $i++) {
                     $producto = $productos->random();
@@ -45,14 +50,15 @@ class DatabaseSeeder extends Seeder
                     $total += $subtotal;
                 }
 
-                // Actualizar el total de la factura
+                // Actualizar total de la factura
                 $factura->update([
                     'total'           => $total,
                     'saldo_pendiente' => $factura->tipo_pago === 'credito' ? $total : 0,
                 ]);
 
-                // Crear un pago asociado
+                // ✅ Pago con factura_id incluido
                 Pago::create([
+                    'factura_id'    => $factura->id,
                     'metodopago_id' => $metodos->random()->id,
                     'monto'         => $total,
                     'fecha_pago'    => now()->format('Y-m-d'),

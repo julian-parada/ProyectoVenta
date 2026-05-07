@@ -20,6 +20,7 @@
                         <th>Teléfono</th>
                         <th>Email</th>
                         <th>Dirección</th>
+                        <th>Estado</th>   {{-- ✅ columna nueva --}}
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -32,6 +33,25 @@
                             <td>{{ $cliente->telefono }}</td>
                             <td>{{ $cliente->email }}</td>
                             <td>{{ $cliente->direccion ?? '-' }}</td>
+
+                            {{-- ✅ Toggle corregido con $cliente --}}
+                            <td class="text-center">
+                                <div class="custom-control custom-switch">
+                                    <input
+                                        type="checkbox"
+                                        class="custom-control-input status-toggle"
+                                        id="status-{{ $cliente->id }}"
+                                        data-url="{{ route('clientes.toggle-status', $cliente) }}"
+                                        {{ $cliente->status ? 'checked' : '' }}
+                                    >
+                                    <label class="custom-control-label" for="status-{{ $cliente->id }}">
+                                        <span class="badge {{ $cliente->status ? 'badge-success' : 'badge-danger' }}">
+                                            {{ $cliente->status ? 'Activo' : 'Inactivo' }}
+                                        </span>
+                                    </label>
+                                </div>
+                            </td>
+
                             <td>
                                 <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-pencil-alt"></i>
@@ -48,7 +68,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted">No hay clientes registrados.</td>
+                            <td colspan="8" class="text-center text-muted">No hay clientes registrados.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -56,3 +76,44 @@
         </div>
     </div>
 @endsection
+
+{{-- ✅ JavaScript al final --}}
+@push('js')
+<script>
+    $(document).on('change', '.status-toggle', function () {
+        const toggle = $(this);
+        const url    = toggle.data('url');
+        const label  = toggle.siblings('label').find('.badge');
+
+        $.ajax({
+            url:  url,
+            type: 'PATCH',
+            data: { _token: '{{ csrf_token() }}' },
+            success: function (res) {
+                if (res.status) {
+                    label.removeClass('badge-danger').addClass('badge-success').text('Activo');
+                } else {
+                    label.removeClass('badge-success').addClass('badge-danger').text('Inactivo');
+                }
+                $(document).Toasts('create', {
+                    title:    'Estado actualizado',
+                    body:      res.message,
+                    autohide:  true,
+                    delay:     3000,
+                    class:     res.status ? 'bg-success' : 'bg-warning',
+                });
+            },
+            error: function () {
+                toggle.prop('checked', !toggle.prop('checked'));
+                $(document).Toasts('create', {
+                    title:    'Error',
+                    body:     'No se pudo cambiar el estado del cliente.',
+                    autohide:  true,
+                    delay:     3000,
+                    class:    'bg-danger',
+                });
+            }
+        });
+    });
+</script>
+@endpush

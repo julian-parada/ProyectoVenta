@@ -57,4 +57,5 @@
 
 @section('js')
 @yield('extra_js')
+@stack('js') 
 @stop

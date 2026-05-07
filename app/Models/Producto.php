@@ -17,6 +17,7 @@ class Producto extends Model
         'stock',
         'stock_minimo',
         'precio_unitario',
+        'status'
     ];
 
     // Un producto aparece en muchos detalles de factura

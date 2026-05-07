@@ -20,16 +20,16 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre'          => 'required|string|max:255',
-            'codigo'          => 'required|string|unique:productos',
-            'stock'           => 'required|integer|min:0',
-            'stock_minimo'    => 'required|integer|min:0',
+            'nombre' => 'required|string|max:255',
+            'codigo' => 'required|string|unique:productos',
+            'stock' => 'required|integer|min:0',
+            'stock_minimo' => 'required|integer|min:0',
             'precio_unitario' => 'required|numeric|min:0',
         ]);
 
         Producto::create($request->all());
         return redirect()->route('productos.index')
-                         ->with('success', 'Producto creado correctamente.');
+            ->with('success', 'Producto creado correctamente.');
     }
 
     public function show(Producto $producto)
@@ -45,22 +45,33 @@ class ProductoController extends Controller
     public function update(Request $request, Producto $producto)
     {
         $request->validate([
-            'nombre'          => 'required|string|max:255',
-            'codigo'          => 'required|string|unique:productos,codigo,' . $producto->id,
-            'stock'           => 'required|integer|min:0',
-            'stock_minimo'    => 'required|integer|min:0',
+            'nombre' => 'required|string|max:255',
+            'codigo' => 'required|string|unique:productos,codigo,' . $producto->id,
+            'stock' => 'required|integer|min:0',
+            'stock_minimo' => 'required|integer|min:0',
             'precio_unitario' => 'required|numeric|min:0',
         ]);
 
         $producto->update($request->all());
         return redirect()->route('productos.index')
-                         ->with('success', 'Producto actualizado correctamente.');
+            ->with('success', 'Producto actualizado correctamente.');
     }
 
     public function destroy(Producto $producto)
     {
         $producto->delete();
         return redirect()->route('productos.index')
-                         ->with('success', 'Producto eliminado correctamente.');
+            ->with('success', 'Producto eliminado correctamente.');
+
+
+    }
+    public function toggleStatus(Producto $product)
+    {
+        $product->update(['status' => !$product->status]);
+
+        return response()->json([
+            'status' => $product->status,
+            'message' => $product->status ? 'Producto activado' : 'Producto desactivado',
+        ]);
     }
 }

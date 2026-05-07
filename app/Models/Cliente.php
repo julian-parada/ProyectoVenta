@@ -16,6 +16,7 @@ class Cliente extends Model
         'telefono',
         'email',
         'n_identificacion',
+        'status'
     ];
 
     // Un cliente puede tener muchas facturas
