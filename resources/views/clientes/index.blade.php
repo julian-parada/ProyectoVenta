@@ -80,39 +80,45 @@
 {{-- ✅ JavaScript al final --}}
 @push('js')
 <script>
-    $(document).on('change', '.status-toggle', function () {
-        const toggle = $(this);
-        const url    = toggle.data('url');
-        const label  = toggle.siblings('label').find('.badge');
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.status-toggle').forEach(function(toggle) {
+            toggle.addEventListener('change', function () {
+                if (this.dataset.processing === 'true') return;
+                
+                this.dataset.processing = 'true';
+                const url  = this.dataset.url;
+                const self = this;
 
-        $.ajax({
-            url:  url,
-            type: 'PATCH',
-            data: { _token: '{{ csrf_token() }}' },
-            success: function (res) {
-                if (res.status) {
-                    label.removeClass('badge-danger').addClass('badge-success').text('Activo');
-                } else {
-                    label.removeClass('badge-success').addClass('badge-danger').text('Inactivo');
-                }
-                $(document).Toasts('create', {
-                    title:    'Estado actualizado',
-                    body:      res.message,
-                    autohide:  true,
-                    delay:     3000,
-                    class:     res.status ? 'bg-success' : 'bg-warning',
+                fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    const badge = self.closest('div').querySelector('.badge');
+
+                    if (data.status) {
+                        self.checked = true;
+                        badge.classList.remove('badge-danger');
+                        badge.classList.add('badge-success');
+                        badge.textContent = 'Activo';
+                    } else {
+                        self.checked = false;
+                        badge.classList.remove('badge-success');
+                        badge.classList.add('badge-danger');
+                        badge.textContent = 'Inactivo';
+                    }
+                })
+                .catch(() => {
+                    self.checked = !self.checked;
+                })
+                .finally(() => {
+                    self.dataset.processing = 'false';
                 });
-            },
-            error: function () {
-                toggle.prop('checked', !toggle.prop('checked'));
-                $(document).Toasts('create', {
-                    title:    'Error',
-                    body:     'No se pudo cambiar el estado del cliente.',
-                    autohide:  true,
-                    delay:     3000,
-                    class:    'bg-danger',
-                });
-            }
+            });
         });
     });
 </script>

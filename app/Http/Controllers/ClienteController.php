@@ -67,11 +67,12 @@ class ClienteController extends Controller
     // app/Http/Controllers/ClientController.php
     public function toggleStatus(Cliente $cliente)
     {
-        $cliente->update(['status' => !$cliente->status]);
+        $newStatus = !$cliente->status;
+        $cliente->update(['status' => $newStatus]);
 
         return response()->json([
-            'status' => $cliente->status,
-            'message' => $cliente->status ? 'Cliente activado' : 'Cliente desactivado',
+            'status' => $newStatus,
+            'message' => $newStatus ? 'Cliente activado' : 'Cliente desactivado',
         ]);
     }
 }
