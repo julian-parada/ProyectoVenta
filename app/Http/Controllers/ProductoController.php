@@ -65,13 +65,14 @@ class ProductoController extends Controller
 
 
     }
-    public function toggleStatus(Producto $product)
+     public function toggleStatus(Producto $producto)
     {
-        $product->update(['status' => !$product->status]);
+        $newStatus = !$producto->status;
+        $producto->update(['status' => $newStatus]);
 
         return response()->json([
-            'status' => $product->status,
-            'message' => $product->status ? 'Producto activado' : 'Producto desactivado',
+            'status' => $newStatus,
+            'message' => $newStatus ? 'producto activado' : 'producto desactivado',
         ]);
     }
 }

@@ -356,81 +356,56 @@ return [
             'text' => 'search',
         ],
         [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
+            'text' => 'Panel Principal',
+            'url' => 'home',
+            'icon' => 'fas fa-fw fa-tachometer-alt',
+            'icon_color' => 'blue',
         ],
+        ['header' => 'GESTIÓN DE VENTAS'],
         [
-            'text' => 'pages',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
-            'label' => 4,
-            'label_color' => 'success',
-        ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text' => 'multilevel',
-            'icon' => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-            ],
-        ],
-        ['header' => 'labels'],
-        [
-            'text' => 'important',
-            'icon_color' => 'red',
-            'url' => '#',
-        ],
-        [
-            'text' => 'warning',
+            'text' => 'Facturas',
+            'url' => 'facturas',
+            'icon' => 'fas fa-fw fa-receipt',
             'icon_color' => 'yellow',
-            'url' => '#',
         ],
         [
-            'text' => 'information',
-            'icon_color' => 'cyan',
-            'url' => '#',
+            'text' => 'Métodos de Pago',
+            'url' => 'metodopagos',
+            'icon' => 'fas fa-fw fa-credit-card',
+            'icon_color' => 'green',
+        ],
+        ['header' => 'INVENTARIO'],
+        [
+            'text' => 'Productos',
+            'url' => 'productos',
+            'icon' => 'fas fa-fw fa-box-open',
+            'icon_color' => 'orange',
+        ],
+        ['header' => 'PERSONAS'],
+        [
+            'text' => 'Clientes',
+            'url' => 'clientes',
+            'icon' => 'fas fa-fw fa-user-tag',
+            'icon_color' => 'lightblue',
+        ],
+        [
+            'text' => 'Empleados',
+            'url' => 'empleados',
+            'icon' => 'fas fa-fw fa-user-tie',
+            'icon_color' => 'purple',
+        ],
+        ['header' => 'MI CUENTA'],
+        [
+            'text' => 'Mi Perfil',
+            'url' => 'profile',
+            'icon' => 'fas fa-fw fa-user-circle',
+            'icon_color' => 'teal',
+        ],
+        [
+            'text' => 'Cambiar Contraseña',
+            'url' => 'profile/change-password',
+            'icon' => 'fas fa-fw fa-key',
+            'icon_color' => 'orange',
         ],
     ],
 
