@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -9,18 +10,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    // database/migrations/xxxx_add_status_to_products_table.php
-public function up(): void
-{
-    Schema::table('productos', function (Blueprint $table) {
-        $table->boolean('status')->default(true)->after('id');
-    });
-}
+    public function up(): void
+    {
+        Schema::table('productos', function (Blueprint $table) {
+            $table->boolean('status')->default(true);
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('productos', function (Blueprint $table) {
-        $table->dropColumn('status');
-    });
-}
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('productos', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
+    }
 };

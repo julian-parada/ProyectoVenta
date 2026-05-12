@@ -62,16 +62,20 @@ class ProductoController extends Controller
         $producto->delete();
         return redirect()->route('productos.index')
             ->with('success', 'Producto eliminado correctamente.');
-
-
     }
+
+
+    
+
     public function toggleStatus(Producto $product)
     {
-        $product->update(['status' => !$product->status]);
+        $newStatus = !$product->status;
+        $product->update(['status' => $newStatus]);
 
         return response()->json([
-            'status' => $product->status,
-            'message' => $product->status ? 'Producto activado' : 'Producto desactivado',
+            'status' => $newStatus,
+            'message' => $newStatus ? 'Producto activado' : 'Producto desactivado',
         ]);
     }
+    
 }

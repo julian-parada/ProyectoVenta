@@ -13,7 +13,7 @@
                 @if (!empty(Auth::user()->photo) && file_exists(public_path($userPhotoPath)))
                     <img class="img-circle elevation-2" src="{{ asset($userPhotoPath) }}" alt="{{ Auth::user()->name }}">
                 @else
-                    <img src="{{ asset('backend/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="">
+                    <img src="{{ asset('uploads/users/default.png') }}" class="img-circle elevation-2" alt="">
                 @endif
 			</div>
 			<div class="info" style="color:#6c757d">

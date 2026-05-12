@@ -224,12 +224,22 @@ class FacturaController extends Controller
         return redirect()->route("facturas.index")->with("success", "Factura actualizada correctamente.");
     }
 
-
     public function destroy(Factura $factura)
     {
-        $factura->detalles()->delete();
-        $factura->delete();
-        return redirect()->route("facturas.index")->with("success", "Factura eliminada correctamente.");
+        try {
+            $factura->detalles()->delete();
+            $factura->delete();
+            return redirect()->route('facturas.index')->with('successMsg', 'El registro se eliminó exitosamente');
+        } catch (QueryException $e) {
+            // Capturar y manejar violaciones de restricción de clave foránea
+            Log::error('Error al eliminar la factura: ' . $e->getMessage());
+            return redirect()->route('facturas.index')->withErrors('El registro que desea eliminar tiene información relacionada. Comuníquese con el Administrador');
+        } catch (Exception $e) {
+            // Capturar y manejar cualquier otra excepción
+            Log::error('Error inesperado al eliminar la factura: ' . $e->getMessage());
+            return redirect()->route('facturas.index')->withErrors('Ocurrió un error inesperado al eliminar el registro. Comuníquese con el Administrador');
+        }
     }
+
 
 }
