@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class NotFoundHttpException extends Exception
+class NotFoundhttpException extends Exception
 {
     public function report()
     {

@@ -17,14 +17,14 @@ class FacturaController extends Controller
         return view("facturas.index", compact("facturas"));
     }
 
-    public function create()
-    {
-        $clientes = Cliente::all();
-        $empleados = Empleado::all();
-        $productos = Producto::all();
-        $metodos = MetodoPago::where("estado", "activo")->get();
-        return view("facturas.create", compact("clientes", "empleados", "productos", "metodos"));
-    }
+   public function create()
+{
+    $clientes = Cliente::where('status', 1 )->get();
+    $empleados = Empleado::all();
+    $productos = Producto::all();
+    $metodos = MetodoPago::where("estado", "activo")->get();
+    return view("facturas.create", compact("clientes", "empleados", "productos", "metodos"));
+}
 
     public function store(Request $request)
     {
@@ -226,20 +226,26 @@ class FacturaController extends Controller
 
     public function destroy(Factura $factura)
     {
-        try {
+		try {
             $factura->detalles()->delete();
             $factura->delete();
             return redirect()->route('facturas.index')->with('successMsg', 'El registro se eliminó exitosamente');
         } catch (QueryException $e) {
             // Capturar y manejar violaciones de restricción de clave foránea
-            Log::error('Error al eliminar la factura: ' . $e->getMessage());
+            Log::error('Error al eliminar el país: ' . $e->getMessage());
             return redirect()->route('facturas.index')->withErrors('El registro que desea eliminar tiene información relacionada. Comuníquese con el Administrador');
         } catch (Exception $e) {
             // Capturar y manejar cualquier otra excepción
-            Log::error('Error inesperado al eliminar la factura: ' . $e->getMessage());
+            Log::error('Error inesperado al eliminar el país: ' . $e->getMessage());
             return redirect()->route('facturas.index')->withErrors('Ocurrió un error inesperado al eliminar el registro. Comuníquese con el Administrador');
         }
     }
 
+    public function cambioestadofactura(Request $request)
+	{
+		$factura = Factura::find($request->id);
+		$factura->estado=$request->estado;
+		$factura->save();
+	}
 
 }

@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Exceptions;
 
 use App\Exceptions\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Exception;
-use Throwable;
 
 class Handler extends ExceptionHandler
 {
