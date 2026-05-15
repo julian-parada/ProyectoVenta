@@ -32,6 +32,7 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 // Todas estas rutas requieren login
 Route::middleware(['auth', 'prevent-back'])->group(function () {
 
+
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::post('facturas/{factura}/abonar', [FacturaController::class, 'abonar'])->name('facturas.abonar');
 
@@ -46,4 +47,8 @@ Route::middleware(['auth', 'prevent-back'])->group(function () {
 
     Route::patch('/clientes/{cliente}/toggle-status', [ClienteController::class, 'toggleStatus'])
         ->name('clientes.toggle-status');
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/change-password', [App\Http\Controllers\ProfileController::class, 'changePassword'])->name('profile.change-password');
+    Route::put('/profile/change-password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.update-password');
 });

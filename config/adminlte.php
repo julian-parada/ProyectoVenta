@@ -368,7 +368,6 @@ return [
             'icon' => 'fas fa-fw fa-receipt',
             'icon_color' => 'yellow',
         ],
-       
         [
             'text' => 'Métodos de Pago',
             'url' => 'metodopagos',
@@ -377,20 +376,19 @@ return [
         ],
         ['header' => 'INVENTARIO'],
         [
-              'text' => 'Productos',
+            'text' => 'Productos',
             'url' => 'productos',
             'icon' => 'fas fa-fw fa-box-open',
             'icon_color' => 'orange',
         ],
-         ['header' => 'PERSONAS'],
+        ['header' => 'PERSONAS'],
         [
             'text' => 'Clientes',
             'url' => 'clientes',
             'icon' => 'fas fa-fw fa-user-tag',
             'icon_color' => 'lightblue',
         ],
-        
-       [
+        [
             'text' => 'Empleados',
             'url' => 'empleados',
             'icon' => 'fas fa-fw fa-user-tie',

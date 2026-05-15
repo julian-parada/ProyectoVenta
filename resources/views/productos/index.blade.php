@@ -94,11 +94,19 @@
         document.querySelectorAll('.status-toggle').forEach(function(toggle) {
             toggle.addEventListener('change', function () {
                 if (this.dataset.processing === 'true') return;
+<<<<<<< HEAD
                 
                 this.dataset.processing = 'true';
                 const url  = this.dataset.url;
                 const self = this;
 
+=======
+
+                this.dataset.processing = 'true';
+                const url  = this.dataset.url;
+                const self = this;
+
+>>>>>>> nuevo-arreglo
                 fetch(url, {
                     method: 'PATCH',
                     headers: {
