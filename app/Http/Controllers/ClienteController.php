@@ -3,9 +3,26 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+ use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ClienteExport;
 
 class ClienteController extends Controller
 {
+   
+
+public function exportarPdf()
+{
+    $clientes = Cliente::all();
+    $pdf = Pdf::loadView('clientes.pdf', compact('clientes'))
+              ->setPaper('a4', 'portrait');
+    return $pdf->stream('clientes.pdf');
+}
+
+public function exportarExcel()
+{
+    return Excel::download(new ClienteExport, 'clientes.xlsx');
+}
     public function index()
     {
         $clientes = Cliente::all();
@@ -57,11 +74,22 @@ class ClienteController extends Controller
             ->with('success', 'Cliente actualizado correctamente.');
     }
 
-    public function destroy(Cliente $cliente)
+     public function destroy(Cliente $cliente)
     {
-        $cliente->delete();
-        return redirect()->route('clientes.index')
-            ->with('success', 'Cliente eliminado correctamente.');
+		try {
+            $cliente->facturas()->delete();
+            
+            $cliente->delete();
+            return redirect()->route('clientes.index')->with('successMsg', 'El registro se eliminó exitosamente');
+        } catch (QueryException $e) {
+            // Capturar y manejar violaciones de restricción de clave foránea
+            Log::error('Error al eliminar el cliente: ' . $e->getMessage());
+            return redirect()->route('clientes.index')->withErrors('El registro que desea eliminar tiene información relacionada. Comuníquese con el Administrador');
+        } catch (Exception $e) {
+            // Capturar y manejar cualquier otra excepción
+            Log::error('Error inesperado al eliminar el cliente: ' . $e->getMessage());
+            return redirect()->route('clientes.index')->withErrors('Ocurrió un error inesperado al eliminar el registro. Comuníquese con el Administrador');
+        }
     }
 
     // app/Http/Controllers/ClientController.php

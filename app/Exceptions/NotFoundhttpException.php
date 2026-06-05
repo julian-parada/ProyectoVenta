@@ -15,4 +15,10 @@ class NotFoundhttpException extends Exception
     {
         return response()->view('errors.404', [], 404);
     }
+
+    
+
+
+    
+    
 }

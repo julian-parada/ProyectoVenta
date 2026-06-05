@@ -18,6 +18,8 @@ class Factura extends Model
         'tipo_pago',
         'estado',
         'saldo_pendiente',
+         'efectivo_recibido',
+         'vuelto',
     ];
 
     // Pertenece a un cliente

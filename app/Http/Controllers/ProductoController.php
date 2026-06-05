@@ -3,9 +3,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductoExport;
+
 
 class ProductoController extends Controller
 {
+
+
+public function exportarPdf()
+{
+    $productos = Producto::all();
+    $pdf = Pdf::loadView('productos.pdf', compact('productos'))
+              ->setPaper('a4', 'portrait');
+    return $pdf->stream('productos.pdf');
+}
+
+public function exportarExcel()
+{
+    return Excel::download(new ProductoExport, 'productos.xlsx');
+}
+
     public function index()
     {
         $productos = Producto::all();
@@ -57,16 +76,22 @@ class ProductoController extends Controller
             ->with('success', 'Producto actualizado correctamente.');
     }
 
-    public function destroy(Producto $producto)
+     public function destroy(Producto $producto)
     {
-        $producto->delete();
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto eliminado correctamente.');
+		try {
+            $producto->detalles()->delete();
+            $producto->delete();
+            return redirect()->route('productos.index')->with('successMsg', 'El registro se eliminó exitosamente');
+        } catch (QueryException $e) {
+            // Capturar y manejar violaciones de restricción de clave foránea
+            Log::error('Error al eliminar el país: ' . $e->getMessage());
+            return redirect()->route('productos.index')->withErrors('El registro que desea eliminar tiene información relacionada. Comuníquese con el Administrador');
+        } catch (Exception $e) {
+            // Capturar y manejar cualquier otra excepción
+            Log::error('Error inesperado al eliminar el país: ' . $e->getMessage());
+            return redirect()->route('productos.index')->withErrors('Ocurrió un error inesperado al eliminar el registro. Comuníquese con el Administrador');
+        }
     }
-
-
-    
-
      public function toggleStatus(Producto $producto)
     {
         $newStatus = !$producto->status;
@@ -77,5 +102,4 @@ class ProductoController extends Controller
             'message' => $newStatus ? 'producto activado' : 'producto desactivado',
         ]);
     }
-    
 }

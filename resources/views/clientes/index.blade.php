@@ -3,11 +3,19 @@
 
 @section('main_content')
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2><i class="bi bi-people"></i> Clientes</h2>
+    <h2><i class="bi bi-people"></i> Clientes</h2>
+    <div>
+        <a href="{{ route('clientes.pdf') }}" class="btn btn-danger btn-sm" target="_blank">
+            <i class="fas fa-file-pdf"></i> PDF
+        </a>
+        <a href="{{ route('clientes.excel') }}" class="btn btn-success btn-sm">
+            <i class="fas fa-file-excel"></i> Excel
+        </a>
         <a href="{{ route('clientes.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Nuevo Cliente
         </a>
     </div>
+</div>
 
     <div class="card shadow-sm">
         <div class="card-body">
@@ -56,14 +64,13 @@
                                 <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('¿Eliminar este cliente?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                               <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" class="d-inline delete-form">
+    @csrf
+    @method('DELETE')
+    <button type="button" class="btn btn-sm btn-danger btn-eliminar">
+        <i class="fas fa-trash"></i>
+    </button>
+</form>
                             </td>
                         </tr>
                     @empty
@@ -121,5 +128,26 @@
             });
         });
     });
+
+    document.querySelectorAll('.btn-eliminar').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const form = this.closest('form');
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: 'Esta acción no se puede deshacer.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    
 </script>
 @endpush
