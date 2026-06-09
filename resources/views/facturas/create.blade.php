@@ -29,6 +29,19 @@
                     </div>
 
                     <div class="col-md-4">
+                        <label class="form-label">Método de Pago</label>
+                        <select name="metodopago_id" class="form-select @error('metodopago_id') is-invalid @enderror">
+                            <option value="">-- Seleccionar --</option>
+                            @foreach($metodos as $metodo)
+                                <option value="{{ $metodo->id }}" {{ old('metodopago_id') == $metodo->id ? 'selected' : '' }}>
+                                    {{ $metodo->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('metodopago_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="col-md-4">
                         <label class="form-label">Empleado</label>
                         <select name="empleado_id" class="form-select @error('empleado_id') is-invalid @enderror">
                             <option value="">-- Seleccionar --</option>
@@ -216,18 +229,18 @@
             ).join('');
 
             const fila = `
-                <tr id="fila-${index}">
-                    <td>
-                        <select name="productos[${index}][id]" class="form-select" onchange="actualizarPrecio(${index})">
-                            <option value="">-- Seleccionar --</option>
-                            ${opciones}
-                        </select>
-                    </td>
-                    <td><input type="text" class="form-control precio-unit" id="precio-${index}" readonly value="0.00"></td>
-                    <td><input type="number" name="productos[${index}][cantidad]" class="form-control cantidad-input" id="cantidad-${index}" min="1" value="1" onchange="calcularSubtotal(${index})"></td>
-                    <td><input type="text" class="form-control subtotal-input" id="subtotal-${index}" readonly value="0.00"></td>
-                    <td><button type="button" class="btn btn-sm btn-danger" onclick="eliminarFila(${index})"><i class="fas fa-trash"></i></button></td>
-                </tr>`;
+                            <tr id="fila-${index}">
+                                <td>
+                                    <select name="productos[${index}][id]" class="form-select" onchange="actualizarPrecio(${index})">
+                                        <option value="">-- Seleccionar --</option>
+                                        ${opciones}
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control precio-unit" id="precio-${index}" readonly value="0.00"></td>
+                                <td><input type="number" name="productos[${index}][cantidad]" class="form-control cantidad-input" id="cantidad-${index}" min="1" value="1" onchange="calcularSubtotal(${index})"></td>
+                                <td><input type="text" class="form-control subtotal-input" id="subtotal-${index}" readonly value="0.00"></td>
+                                <td><button type="button" class="btn btn-sm btn-danger" onclick="eliminarFila(${index})"><i class="fas fa-trash"></i></button></td>
+                            </tr>`;
             document.getElementById('filas-productos').insertAdjacentHTML('beforeend', fila);
         }
 
@@ -248,26 +261,26 @@
 
                     const opciones = Object.values(productos).map(p =>
                         `<option value="${p.id}" ${p.id == item.id ? 'selected' : ''} data-precio="${p.precio_unitario}">
-                        ${p.nombre} (${p.codigo})
-                    </option>`
+                                    ${p.nombre} (${p.codigo})
+                                </option>`
                     ).join('');
 
                     const precio = productos[item.id] ? productos[item.id].precio_unitario : 0;
                     const subtotal = precio * (item.cantidad || 1);
 
                     const fila = `
-                <tr id="fila-${index}">
-                    <td>
-                        <select name="productos[${index}][id]" class="form-select" onchange="actualizarPrecio(${index})">
-                            <option value="">-- Seleccionar --</option>
-                            ${opciones}
-                        </select>
-                    </td>
-                    <td><input type="text" class="form-control precio-unit" id="precio-${index}" readonly value="${parseFloat(precio).toFixed(2)}"></td>
-                    <td><input type="number" name="productos[${index}][cantidad]" class="form-control cantidad-input" id="cantidad-${index}" min="1" value="${item.cantidad || 1}" onchange="calcularSubtotal(${index})"></td>
-                    <td><input type="text" class="form-control subtotal-input" id="subtotal-${index}" readonly value="${subtotal.toFixed(2)}"></td>
-                    <td><button type="button" class="btn btn-sm btn-danger" onclick="eliminarFila(${index})"><i class="fas fa-trash"></i></button></td>
-                </tr>`;
+                            <tr id="fila-${index}">
+                                <td>
+                                    <select name="productos[${index}][id]" class="form-select" onchange="actualizarPrecio(${index})">
+                                        <option value="">-- Seleccionar --</option>
+                                        ${opciones}
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control precio-unit" id="precio-${index}" readonly value="${parseFloat(precio).toFixed(2)}"></td>
+                                <td><input type="number" name="productos[${index}][cantidad]" class="form-control cantidad-input" id="cantidad-${index}" min="1" value="${item.cantidad || 1}" onchange="calcularSubtotal(${index})"></td>
+                                <td><input type="text" class="form-control subtotal-input" id="subtotal-${index}" readonly value="${subtotal.toFixed(2)}"></td>
+                                <td><button type="button" class="btn btn-sm btn-danger" onclick="eliminarFila(${index})"><i class="fas fa-trash"></i></button></td>
+                            </tr>`;
 
                     document.getElementById('filas-productos').insertAdjacentHTML('beforeend', fila);
                     filaCount = index + 1;

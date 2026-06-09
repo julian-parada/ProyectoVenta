@@ -59,14 +59,20 @@ class ProductoController extends Controller
 
     public function destroy(Producto $producto)
     {
-        $producto->delete();
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto eliminado correctamente.');
+		try {
+            $producto->detalles()->delete();
+            $producto->delete();
+            return redirect()->route('productos.index')->with('successMsg', 'El registro se eliminó exitosamente');
+        } catch (QueryException $e) {
+            // Capturar y manejar violaciones de restricción de clave foránea
+            Log::error('Error al eliminar el producto: ' . $e->getMessage());
+            return redirect()->route('productos.index')->withErrors('El registro que desea eliminar tiene información relacionada. Comuníquese con el Administrador');
+        } catch (Exception $e) {
+            // Capturar y manejar cualquier otra excepción
+            Log::error('Error inesperado al eliminar el producto: ' . $e->getMessage());
+            return redirect()->route('productos.index')->withErrors('Ocurrió un error inesperado al eliminar el registro. Comuníquese con el Administrador');
+        }
     }
-
-
-    
-
      public function toggleStatus(Producto $producto)
     {
         $newStatus = !$producto->status;
@@ -77,5 +83,4 @@ class ProductoController extends Controller
             'message' => $newStatus ? 'producto activado' : 'producto desactivado',
         ]);
     }
-    
 }

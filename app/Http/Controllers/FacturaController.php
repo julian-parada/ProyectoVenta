@@ -17,14 +17,18 @@ class FacturaController extends Controller
         return view("facturas.index", compact("facturas"));
     }
 
-   public function create()
-{
-    $clientes = Cliente::where('status', 1 )->get();
-    $empleados = Empleado::all();
-    $productos = Producto::all();
-    $metodos = MetodoPago::where("estado", "activo")->get();
-    return view("facturas.create", compact("clientes", "empleados", "productos", "metodos"));
-}
+
+    public function create()
+    {
+        $clientes = Cliente::all();
+        $empleados = Empleado::all();
+        $productos = Producto::all();
+        $metodos = MetodoPago::all();
+
+        return view('facturas.create', compact('clientes', 'empleados', 'productos', 'metodos'));
+    }
+
+
 
     public function store(Request $request)
     {
@@ -46,6 +50,7 @@ class FacturaController extends Controller
             "productos.*.cantidad" => "required|integer|min:1",
             "abono_inicial" => "nullable|numeric|min:0",
             "efectivo_recibido" => "nullable|numeric|min:0",
+            'metodopago_id' => 'required|exists:metodospagos,id',
         ]);
 
         // Verificar stock
@@ -131,6 +136,7 @@ class FacturaController extends Controller
                 'factura_id' => $factura->id,
                 'monto' => $montoAbono,
                 'fecha_pago' => now()->format('Y-m-d'),
+                'metodopago_id' => $request->metodopago_id,
             ]);
         }
 
@@ -177,6 +183,7 @@ class FacturaController extends Controller
             'factura_id' => $factura->id,
             'monto' => $monto,
             'fecha_pago' => now()->format('Y-m-d'),
+            'metodopago_id' => $request->metodopago_id,
         ]);
 
         // Actualizar saldo
@@ -226,7 +233,7 @@ class FacturaController extends Controller
 
     public function destroy(Factura $factura)
     {
-		try {
+        try {
             $factura->detalles()->delete();
             $factura->delete();
             return redirect()->route('facturas.index')->with('successMsg', 'El registro se eliminó exitosamente');
@@ -242,10 +249,10 @@ class FacturaController extends Controller
     }
 
     public function cambioestadofactura(Request $request)
-	{
-		$factura = Factura::find($request->id);
-		$factura->estado=$request->estado;
-		$factura->save();
-	}
+    {
+        $factura = Factura::find($request->id);
+        $factura->estado = $request->estado;
+        $factura->save();
+    }
 
 }

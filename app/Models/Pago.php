@@ -14,10 +14,16 @@ class Pago extends Model
         'factura_id',
         'monto',
         'fecha_pago',
+        'metodopago_id',
     ];
 
     public function factura()
     {
         return $this->belongsTo(Factura::class);
+    }
+
+    public function metodoPago()
+    {
+        return $this->belongsTo(MetodoPago::class, 'metodopago_id');
     }
 }
