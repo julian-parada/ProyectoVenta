@@ -64,7 +64,7 @@ class FacturaController extends Controller
 
         $request->validate([
             "cliente_id" => "required|exists:clientes,id",
-            "empleado_id" => "required|exists:empleados,id",
+           
             "fecha" => "required|date",
             "tipo_pago" => "required|string",
             "productos" => "required|array|min:1",

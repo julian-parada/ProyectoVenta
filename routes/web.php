@@ -18,22 +18,9 @@ use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\PagoController;
 
-/*
-|--------------------------------------------------------------------------
-| Ruta raíz
-|--------------------------------------------------------------------------
-*/
-Route::get('/', fn() => view('auth.login'));
 
-/*
-|--------------------------------------------------------------------------
-| Autenticación
-|--------------------------------------------------------------------------
-*/
-Route::controller(LoginController::class)->group(function () {
-    Route::get('login', 'showLoginForm')->name('login');
-    Route::post('login', 'login');
-    Route::post('logout', 'logout')->name('logout');
+Route::get('/', function () {
+    return view('auth.login');
 });
 
 Route::controller(RegisterController::class)->group(function () {
@@ -56,22 +43,48 @@ Route::controller(ResetPasswordController::class)->group(function () {
     Route::post('password/reset', 'reset')->name('password.update');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Rutas de error
-|--------------------------------------------------------------------------
-*/
-Route::get('/error/403', fn() => response()->view('errors.403', [], 403))->name('error.403');
-Route::get('/error/404', fn() => response()->view('errors.404', [], 404))->name('error.404');
-Route::get('/error/419', fn() => response()->view('errors.419', [], 419))->name('error.419');
-Route::get('/error/500', fn() => response()->view('errors.500', [], 500))->name('error.500');
-Route::get('/error/503', fn() => response()->view('errors.503', [], 503))->name('error.503');
+Route::get('/404', function () {
+    return response()->view('errors.404', [], 404);
+});
+Route::get('/403', function () {
+    return response()->view('errors.403', [], 403);
+});
+Route::get('/419', function () {
+    return response()->view('errors.419', [], 419);
+});
+Route::get('/500', function () {
+    return response()->view('errors.500', [], 500);
+});
+Route::get('/503', function () {
+    return response()->view('errors.503', [], 503);
+});
 
-/*
-|--------------------------------------------------------------------------
-| Rutas protegidas (requieren login)
-|--------------------------------------------------------------------------
-*/
+
+// PDF por factura
+Route::get('facturas/{id}/pdf', [FacturaController::class, 'imprimirPdf'])
+    ->name('facturas.pdf');
+
+// Excel por factura
+Route::get('facturas/{id}/excel', [FacturaController::class, 'exportarExcel'])
+    ->name('facturas.excel');
+
+// Excel general de todas las facturas
+Route::get('facturas-excel', [FacturaController::class, 'exportarExcelGeneral'])
+    ->name('facturas.excel.general');
+
+    Route::get('clientes/pdf', [ClienteController::class, 'exportarPdf'])
+    ->name('clientes.pdf');
+
+Route::get('clientes/excel', [ClienteController::class, 'exportarExcel'])
+    ->name('clientes.excel');
+
+    Route::get('productos/pdf', [ProductoController::class, 'exportarPdf'])
+    ->name('productos.pdf');
+
+Route::get('productos/excel', [ProductoController::class, 'exportarExcel'])
+    ->name('productos.excel');
+
+// Todas estas rutas requieren login
 Route::middleware(['auth', 'prevent-back'])->group(function () {
 
     // Home

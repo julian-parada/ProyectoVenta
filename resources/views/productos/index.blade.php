@@ -66,14 +66,16 @@
                                 <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <form action="{{ route('productos.destroy', $producto->id) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('¿Eliminar este producto?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                               <form action="{{ route('productos.destroy', $producto->id) }}" method="POST" class="d-inline delete-form">
+    @csrf
+    @method('DELETE')
+    <button type="button" class="btn btn-sm btn-danger btn-eliminar">
+        <i class="fas fa-trash"></i>
+    </button>
+</form>
+
+
+                                
                             </td>
                         </tr>
                     @empty
@@ -131,5 +133,24 @@
             });
         });
     });
+    document.querySelectorAll('.btn-eliminar').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const form = this.closest('form');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+});
 </script>
 @endpush

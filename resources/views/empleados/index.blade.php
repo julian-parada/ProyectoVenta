@@ -39,14 +39,14 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-sm btn-warning">
+                                <a href="{{ route('empleados.edit', $empleado->id) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <form action="{{ route('productos.destroy', $producto->id) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('¿Eliminar este producto?')">
+                                <form action="{{ route('empleados.destroy', $empleado->id) }}" method="POST"
+                                    class="d-inline delete-form">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">
+                                    <button type="button" class="btn btn-sm btn-danger btn-eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -62,3 +62,69 @@
         </div>
     </div>
 @endsection
+
+{{-- ✅ JavaScript al final --}}
+@push('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.status-toggle').forEach(function (toggle) {
+                toggle.addEventListener('change', function () {
+                    if (this.dataset.processing === 'true') return;
+
+                    this.dataset.processing = 'true';
+                    const url = this.dataset.url;
+                    const self = this;
+
+                    fetch(url, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            const badge = self.closest('div').querySelector('.badge');
+
+                            if (data.status) {
+                                self.checked = true;
+                                badge.classList.remove('badge-danger');
+                                badge.classList.add('badge-success');
+                                badge.textContent = 'Activo';
+                            } else {
+                                self.checked = false;
+                                badge.classList.remove('badge-success');
+                                badge.classList.add('badge-danger');
+                                badge.textContent = 'Inactivo';
+                            }
+                        })
+                        .catch(() => {
+                            self.checked = !self.checked;
+                        })
+                        .finally(() => {
+                            self.dataset.processing = 'false';
+                        });
+                });
+            });
+        });
+        document.querySelectorAll('.btn-eliminar').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const form = this.closest('form');
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: 'Esta acción no se puede deshacer.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

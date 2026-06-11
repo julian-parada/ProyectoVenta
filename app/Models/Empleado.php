@@ -11,17 +11,23 @@ class Empleado extends Model
     protected $table = 'empleados';
 
     protected $fillable = [
-        'nombre',
-        'telefono',
-        'cargo',
-        'departamento',
-        'salario',
-        'estado',
-    ];
+    'user_id',
+    'nombre',
+    'telefono',
+    'cargo',
+    'departamento',
+    'salario',
+    'estado',
+];
 
     // Un empleado puede registrar muchas facturas
     public function facturas()
     {
         return $this->hasMany(Factura::class, 'empleado_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

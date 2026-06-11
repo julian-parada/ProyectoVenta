@@ -3,9 +3,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductoExport;
+
 
 class ProductoController extends Controller
 {
+
+
+public function exportarPdf()
+{
+    $productos = Producto::all();
+    $pdf = Pdf::loadView('productos.pdf', compact('productos'))
+              ->setPaper('a4', 'portrait');
+    return $pdf->stream('productos.pdf');
+}
+
+public function exportarExcel()
+{
+    return Excel::download(new ProductoExport, 'productos.xlsx');
+}
+
     public function index()
     {
         $productos = Producto::all();
@@ -57,7 +76,7 @@ class ProductoController extends Controller
             ->with('success', 'Producto actualizado correctamente.');
     }
 
-    public function destroy(Producto $producto)
+     public function destroy(Producto $producto)
     {
 		try {
             $producto->detalles()->delete();

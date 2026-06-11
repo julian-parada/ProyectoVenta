@@ -368,12 +368,7 @@ return [
             'icon' => 'fas fa-fw fa-receipt',
             'icon_color' => 'yellow',
         ],
-        [
-            'text' => 'Métodos de Pago',
-            'url' => 'metodopagos',
-            'icon' => 'fas fa-fw fa-credit-card',
-            'icon_color' => 'green',
-        ],
+      
         ['header' => 'INVENTARIO'],
         [
             'text' => 'Productos',
@@ -388,12 +383,7 @@ return [
             'icon' => 'fas fa-fw fa-user-tag',
             'icon_color' => 'lightblue',
         ],
-        [
-            'text' => 'Empleados',
-            'url' => 'empleados',
-            'icon' => 'fas fa-fw fa-user-tie',
-            'icon_color' => 'purple',
-        ],
+       
         ['header' => 'MI CUENTA'],
         [
             'text' => 'Mi Perfil',
