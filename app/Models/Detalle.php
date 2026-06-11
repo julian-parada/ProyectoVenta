@@ -29,4 +29,9 @@ class Detalle extends Model
     {
         return $this->belongsTo(Producto::class, 'producto_id');
     }
+
+     public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
 }

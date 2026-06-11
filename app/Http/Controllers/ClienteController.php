@@ -42,22 +42,27 @@ class ClienteController extends Controller
     }
 
    public function destroy(Cliente $cliente)
-    {
-		try {
-           
-            $cliente->delete();
-            return redirect()->route('clientes.index')->with('successMsg', 'El registro se eliminó exitosamente');
-        } catch (QueryException $e) {
-            // Capturar y manejar violaciones de restricción de clave foránea
-            Log::error('Error al eliminar el cliente: ' . $e->getMessage());
-            return redirect()->route('clientes.index')->withErrors('El registro que desea eliminar tiene información relacionada. Comuníquese con el Administrador');
-        } catch (Exception $e) {
-            // Capturar y manejar cualquier otra excepción
-            Log::error('Error inesperado al eliminar el cliente: ' . $e->getMessage());
-            return redirect()->route('clientes.index')->withErrors('Ocurrió un error inesperado al eliminar el registro. Comuníquese con el Administrador');
+{
+    try {
+        // 1. Eliminar detalles de cada factura
+        foreach ($cliente->facturas as $factura) {
+            $factura->detalles()->delete();
+            $factura->pagos()->delete(); // si tienes pagos también
         }
-    }
+        // 2. Eliminar facturas
+        $cliente->facturas()->delete();
+        // 3. Eliminar cliente
+        $cliente->delete();
 
+        return redirect()->route('clientes.index')->with('successMsg', 'El registro se eliminó exitosamente');
+    } catch (QueryException $e) {
+        Log::error('Error al eliminar el cliente: ' . $e->getMessage());
+        return redirect()->route('clientes.index')->withErrors('El registro que desea eliminar tiene información relacionada. Comuníquese con el Administrador');
+    } catch (Exception $e) {
+        Log::error('Error inesperado al eliminar el cliente: ' . $e->getMessage());
+        return redirect()->route('clientes.index')->withErrors('Ocurrió un error inesperado al eliminar el registro. Comuníquese con el Administrador');
+    }
+}
     // app/Http/Controllers/ClientController.php
     public function toggleStatus(Cliente $cliente)
     {

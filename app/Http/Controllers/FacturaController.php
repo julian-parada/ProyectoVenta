@@ -8,9 +8,31 @@ use App\Models\Producto;
 use App\Models\Detalle;
 use App\Models\MetodoPago;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FacturaExport;
+use App\Exports\FacturasExport;
 
 class FacturaController extends Controller
 {
+    public function imprimirPdf($id)
+    {
+        $factura = Factura::with(['cliente', 'empleado', 'detalles.producto'])->findOrFail($id);
+        $pdf = Pdf::loadView('facturas.pdf', compact('factura'))
+            ->setPaper('a4', 'portrait');
+        return $pdf->stream('factura-' . $id . '.pdf');
+    }
+
+    public function exportarExcel($id)
+    {
+        $factura = Factura::with(['cliente', 'empleado', 'detalles.producto'])->findOrFail($id);
+        return Excel::download(new FacturaExport($factura), 'factura-' . $id . '.xlsx');
+    }
+
+    public function exportarExcelGeneral()
+    {
+        return Excel::download(new FacturasExport, 'facturas-general.xlsx');
+    }
     public function index()
     {
         $facturas = Factura::with("cliente", "empleado")->get();
@@ -50,7 +72,7 @@ class FacturaController extends Controller
             "productos.*.cantidad" => "required|integer|min:1",
             "abono_inicial" => "nullable|numeric|min:0",
             "efectivo_recibido" => "nullable|numeric|min:0",
-            'metodopago_id' => 'required|exists:metodospagos,id',
+            'metodopago_id' => 'required',
         ]);
 
         // Verificar stock
@@ -83,7 +105,7 @@ class FacturaController extends Controller
                 $faltante = $total - $efectivo;
                 return back()->withInput()->with(
                     'error',
-                    "💰 Efectivo insuficiente. Total: $" . number_format($total, 2) .
+                    " Efectivo insuficiente. Total: $" . number_format($total, 2) .
                     " | Recibido: $" . number_format($efectivo, 2) .
                     " | Falta: $" . number_format($faltante, 2)
                 );
@@ -102,16 +124,19 @@ class FacturaController extends Controller
         }
 
         // Crear factura
+       
+
         $factura = Factura::create([
             "cliente_id" => $request->cliente_id,
-            "empleado_id" => $request->empleado_id,
+            "empleado_id" => $request->empleado_id, 
             "fecha" => $request->fecha,
             "tipo_pago" => $request->tipo_pago,
             "total" => $total,
             "saldo_pendiente" => $saldo,
             "estado" => $estado,
+            'efectivo_recibido' => $request->efectivo_recibido,
+            'vuelto' => $vuelto > 0 ? $vuelto : 0,
         ]);
-
         // Crear detalles y descontar stock
         $alertas = [];
         foreach ($request->productos as $item) {
@@ -140,19 +165,19 @@ class FacturaController extends Controller
             ]);
         }
 
-        $mensaje = "✅ Factura #{$factura->id} creada correctamente.";
+        $mensaje = " Factura #{$factura->id} creada correctamente.";
 
         if ($request->tipo_pago === 'contado') {
             $mensaje .= " | Total: $" . number_format($total, 2);
             $mensaje .= " | Efectivo: $" . number_format($request->efectivo_recibido ?? $total, 2);
             if ($vuelto > 0) {
-                $mensaje .= " | 💵 Vuelto: $" . number_format($vuelto, 2);
+                $mensaje .= " |  Vuelto: $" . number_format($vuelto, 2);
             }
         } else {
             if ($saldo > 0) {
-                $mensaje .= " | ⏳ Saldo pendiente: $" . number_format($saldo, 2);
+                $mensaje .= " | Saldo pendiente: $" . number_format($saldo, 2);
             } else {
-                $mensaje .= " | ✅ Pagada completamente.";
+                $mensaje .= " |  Pagada completamente.";
             }
         }
 
@@ -162,6 +187,9 @@ class FacturaController extends Controller
         }
         return $redirect;
     }
+
+
+
 
     public function abonar(Request $request, Factura $factura)
     {
@@ -194,11 +222,11 @@ class FacturaController extends Controller
         ]);
 
         $mensaje = $nuevoSaldo <= 0
-            ? '✅ Factura pagada completamente.'
-            : '✅ Abono registrado. Saldo pendiente: $' . number_format($nuevoSaldo, 2);
+            ? ' Factura pagada completamente.'
+            : ' Abono registrado. Saldo pendiente: $' . number_format($nuevoSaldo, 2);
 
         if ($vuelto > 0) {
-            $mensaje .= " 💵 Vuelto: $" . number_format($vuelto, 2);
+            $mensaje .= "  Vuelto: $" . number_format($vuelto, 2);
         }
 
         return redirect()->route('facturas.show', $factura->id)->with('success', $mensaje);
