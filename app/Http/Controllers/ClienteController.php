@@ -11,7 +11,8 @@ class ClienteController extends Controller
 {
    
 
-public function exportarPdf()
+
+public function exportarPdfGeneral()
 {
     $clientes = Cliente::all();
     $pdf = Pdf::loadView('clientes.pdf', compact('clientes'))
@@ -19,9 +20,9 @@ public function exportarPdf()
     return $pdf->stream('clientes.pdf');
 }
 
-public function exportarExcel()
+public function exportarExcelGeneral()
 {
-    return Excel::download(new ClienteExport, 'clientes.xlsx');
+    return Excel::download(new ClienteExport, 'clientes-general.xlsx');
 }
     public function index()
     {

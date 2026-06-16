@@ -12,7 +12,8 @@ class ProductoController extends Controller
 {
 
 
-public function exportarPdf()
+
+public function exportarPdfGeneral()
 {
     $productos = Producto::all();
     $pdf = Pdf::loadView('productos.pdf', compact('productos'))
@@ -20,9 +21,9 @@ public function exportarPdf()
     return $pdf->stream('productos.pdf');
 }
 
-public function exportarExcel()
+public function exportarExcelGeneral()
 {
-    return Excel::download(new ProductoExport, 'productos.xlsx');
+    return Excel::download(new ProductoExport, 'productos-general.xlsx');
 }
 
     public function index()

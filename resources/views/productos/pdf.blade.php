@@ -62,7 +62,7 @@
                 <th>Stock</th>
                 <th>Stock Mínimo</th>
                 <th>Precio Unitario</th>
-                <th>Estado</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -76,8 +76,10 @@
                     </td>
                     <td>{{ $producto->stock_minimo }}</td>
                     <td>${{ number_format($producto->precio_unitario, 2) }}</td>
-                    <td class="{{ $producto->status == 'activo' ? 'activo' : 'inactivo' }}">
-                        {{ strtoupper($producto->status) }}
+                    <td>
+                        <span class="badge {{ $producto->status == 'activo' ? 'activo' : 'inactivo' }}">
+                            {{ strtoupper($producto->status) }}
+                        </span>
                     </td>
                 </tr>
             @endforeach

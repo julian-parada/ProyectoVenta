@@ -7,6 +7,12 @@
         <a href="{{ route('productos.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Nuevo Producto
         </a>
+        <a href="{{ route('productos.pdf.general') }}" class="btn btn-danger me-2">
+            <i class="fas fa-file-pdf"></i> Exportar PDF General
+        </a>
+        <a href="{{ route('productos.excel.general') }}" class="btn btn-success me-2">
+            <i class="fas fa-file-excel"></i> Exportar Excel General
+        </a>
     </div>
 
     <div class="card shadow-sm">
@@ -63,6 +69,10 @@
                             </td>
 
                             <td>
+                        
+                                
+
+
                                 <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>

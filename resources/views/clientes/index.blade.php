@@ -5,10 +5,10 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
     <h2><i class="bi bi-people"></i> Clientes</h2>
     <div>
-        <a href="{{ route('clientes.pdf') }}" class="btn btn-danger btn-sm" target="_blank">
+        <a href="{{ route('clientes.pdf.general') }}" class="btn btn-danger btn-sm" target="_blank">
             <i class="fas fa-file-pdf"></i> PDF
         </a>
-        <a href="{{ route('clientes.excel') }}" class="btn btn-success btn-sm">
+        <a href="{{ route('clientes.excel.general') }}" class="btn btn-success btn-sm">
             <i class="fas fa-file-excel"></i> Excel
         </a>
         <a href="{{ route('clientes.create') }}" class="btn btn-primary">
@@ -61,6 +61,10 @@
                             </td>
 
                             <td>
+
+                               
+
+
                                 <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Factura #{{ $factura->id }}</title>
+    <title>Factura </title>
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
@@ -70,13 +70,13 @@
 
 <body>
     <div class="header">
-        <h2>Factura #{{ $factura->id }}</h2>
+        <h2>Factura </h2>
         <p>Fecha de emisión: {{ now()->format('d/m/Y H:i') }}</p>
     </div>
 
     <div class="info">
-        <p><strong>Cliente:</strong> {{ $factura->cliente->nombre }}</p>
-        <p><strong>Empleado:</strong> {{ $factura->empleado->nombre }}</p>
+        <p><strong>Cliente:</strong> {{ $factura->cliente?->nombre ?? 'Sin cliente' }}</p>
+        <p><strong>Empleado:</strong> {{ $factura->empleado?->nombre ?? 'Sin empleado' }}</p>
         <p><strong>Fecha:</strong> {{ $factura->fecha }}</p>
         <p><strong>Tipo de Pago:</strong> {{ ucfirst($factura->tipo_pago) }}</p>
         <p><strong>Estado:</strong>

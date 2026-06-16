@@ -23,6 +23,14 @@ class FacturaController extends Controller
     return $pdf->stream('factura-'.$id.'.pdf');
 }
 
+public function exportarPdfGeneral()
+{
+    $facturas = Factura::with(['cliente', 'empleado', 'detalles.producto'])->get();
+    $pdf = Pdf::loadView('facturas.pdf_general', compact('facturas'))  // 👈 vista correcta
+              ->setPaper('a4', 'landscape');
+    return $pdf->stream('facturas-general.pdf');
+}
+
 public function exportarExcel($id)
 {
     $factura = Factura::with(['cliente', 'empleado', 'detalles.producto'])->findOrFail($id);
@@ -32,6 +40,8 @@ public function exportarExcel($id)
 public function exportarExcelGeneral()
 {
     return Excel::download(new FacturasExport, 'facturas-general.xlsx');
+    
+
 }
     public function index()
     {
@@ -119,14 +129,9 @@ public function exportarExcelGeneral()
         }
 
         // Crear factura
-        $empleado = auth()->user()->empleado;
-        if (!$empleado) {
-            return back()->withInput()->with('error', 'El usuario actual no tiene un empleado asociado.');
-        }
-
         $factura = Factura::create([
             "cliente_id" => $request->cliente_id,
-            "empleado_id" => $empleado->id,
+           "empleado_id" => auth()->user()->empleado->id,
             "fecha" => $request->fecha,
             "tipo_pago" => $request->tipo_pago,
             "total" => $total,
