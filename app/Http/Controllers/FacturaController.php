@@ -22,6 +22,13 @@ class FacturaController extends Controller
             ->setPaper('a4', 'portrait');
         return $pdf->stream('factura-' . $id . '.pdf');
     }
+    public function exportarPdf()
+{
+    $facturas = Factura::with(['cliente', 'empleado', 'detalles.producto'])->get();
+    $pdf = Pdf::loadView('facturas.pdf', compact('facturas'))
+              ->setPaper('a4', 'portrait');
+    return $pdf->stream('facturas.pdf');
+}
 
     public function exportarExcel($id)
     {

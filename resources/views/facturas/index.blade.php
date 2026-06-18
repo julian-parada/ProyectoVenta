@@ -7,6 +7,7 @@
         <a href="{{ route('facturas.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Nueva Factura
         </a>
+         
         <a href="{{ route('facturas.excel.general') }}" class="btn btn-success me-2">
             <i class="fas fa-file-excel"></i> Exportar Todo
         </a>
