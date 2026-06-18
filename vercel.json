@@ -5,7 +5,8 @@
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.2",
-      "includeFiles": "vendor/**"
+      "includeFiles": "vendor/**",
+      "excludeFiles": "vendor/almasaeed2010/adminlte/dist/**|vendor/almasaeed2010/adminlte/plugins/**|vendor/phpoffice/phpspreadsheet/samples/**|vendor/ezyang/htmlpurifier/tests/**|vendor/ezyang/htmlpurifier/smoketests/**|vendor/nikic/php-parser/test/**|vendor/psy/psysh/test/**"
     }
   },
   "routes": [
