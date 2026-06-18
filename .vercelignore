@@ -1,8 +1,10 @@
 node_modules
 tests
-.git
 storage/logs
 storage/framework/cache
 storage/framework/sessions
 storage/framework/views
 bootstrap/cache
+vendor/almasaeed2010/adminlte/dist
+vendor/almasaeed2010/adminlte/plugins
+vendor/almasaeed2010/adminlte/docs
