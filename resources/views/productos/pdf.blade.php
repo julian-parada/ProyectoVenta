@@ -62,7 +62,7 @@
                 <th>Stock</th>
                 <th>Stock Mínimo</th>
                 <th>Precio Unitario</th>
-                <th>Status</th>
+                <th>Status </th>
             </tr>
         </thead>
         <tbody>
