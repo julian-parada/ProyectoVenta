@@ -1,4 +1,10 @@
+[phases.setup]
+nixPkgs = ["php82", "php82Extensions.gd", "php82Extensions.zip", "php82Extensions.mbstring", "php82Extensions.xml", "php82Extensions.curl", "php82Extensions.pdo", "php82Extensions.pdo_mysql"]
+
 [phases.build]
 cmds = [
-    "composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-req=ext-gd --ignore-platform-req=ext-zip"
+    "composer install --optimize-autoloader --no-scripts --no-interaction"
 ]
+
+[start]
+cmd = "php artisan serve --host=0.0.0.0 --port=$PORT"
